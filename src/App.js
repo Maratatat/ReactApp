@@ -1,31 +1,31 @@
 import React, {useState} from "react";
+import Counter from "./Components/Counter";
+import counter from "./Components/Counter";
+import ClassCounter from "./Components/ClassCounter";
 
 function App() {
-  const [counter, setCount]=useState(0)
+    const [value, setValue] = useState('')
+    
 
-  function Increment(){
-    setCount(counter + 1)
-  }
-  function Decrement(){
-    setCount(counter - 1)
-  }
-  return (
-      [<div>
-        App works!
-      </div>,
-        React.createElement("button", {
-          disabled: false,
-          onClick: () => console.log('clicked')
-        }, 'App works!'),
+    return (
+        [<div>
+            App works!
+        </div>,
+            React.createElement("button", {
+                disabled: false,
+                onClick: () => console.log('clicked')
+            }, 'App works!'),
 
-        <div>
-          <h1>{counter}</h1>
-          <button onClick={Increment}>Increment</button>
-          <button onClick={Decrement}>Decrement
-          </button>
-        </div>
-      ]
-  );
+            <Counter/>,
+            <ClassCounter/>,
+            <div>
+                <h1>{value}</h1>
+                <input type="text" value={value} onChange={event => {
+                    setValue(event.target.value)
+                }}/>
+            </div>
+        ]
+    );
 }
 
 export default App;
