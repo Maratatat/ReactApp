@@ -1,0 +1,31 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#root {
+    display: flex;
+    justify-content: center;
+}
+
+.App {
+    width: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.post {
+    width: 100%;
+    display: flex;
+    padding: 15px;
+    border: 1px solid deepskyblue;
+    margin-top: 15px;
+    justify-content: space-between;
+    align-items: center;
+}
+input{
+    margin: 10px 0;
+}
