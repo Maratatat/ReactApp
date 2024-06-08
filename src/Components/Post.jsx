@@ -5,7 +5,7 @@ const Post = (props) => {
         <div className="post">
             <div className="post--content">
                 <strong>
-                    {props.post.id}. {props.post.title}
+                    {props.number ?? props.post.id}. {props.post.title}
                 </strong>
                 <div>
                     {props.post.body}

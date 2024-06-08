@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import Counter from "./Components/Counter";
 import ClassCounter from "./Components/ClassCounter";
 import AppWorks from "./Components/AppWorks";
@@ -14,11 +14,20 @@ function App() {
         {id: 3, title: 'Java', body: "Spring is Java's framework"},
         {id: 4, title: 'Python', body: "Jango is Python's framework"}
     ]);
-    
+
     const [title, setTitle] = useState("");
-    
+    const [body, setBody] = useState('');
+
     const addNewPost = (e) => {
         e.preventDefault();
+        const newPost = {
+            id: Date.now(),
+            title,
+            body
+        }
+        setPosts([...posts, newPost])
+        setTitle('')
+        setBody('')
     }
 
     return (
@@ -27,12 +36,14 @@ function App() {
             <Counter/>
             <ClassCounter/>
             <InputWithH1/>
-            <PostList posts={posts} title="List of posts 1"/>
             <form action="">
-                <MyInput value={title} onChange={e=>setTitle(e.target.value) } type="text" placeholder="Post's name"/>
-                <MyInput type="text" placeholder="Post's description"/>
-                <MyButton onClick={addNewPost('sss')}>Create post</MyButton>
+                <MyInput value={title} onChange={e => setTitle(e.target.value)} type="text" placeholder="Post's name"/>
+                <MyInput value={body} onChange={e => setBody(e.target.value)} type="text"
+                         placeholder="Post's description"/>
+                <MyButton onClick={addNewPost}>Create post</MyButton>
             </form>
+            <PostList posts={posts} title="List of posts"/>
+
 
         </div>
     );
