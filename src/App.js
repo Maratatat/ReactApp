@@ -6,6 +6,7 @@ import InputWithH1 from "./Components/InputWithH1";
 import PostList from "./Components/PostList";
 import MyButton from "./Components/UI/button/MyButton";
 import MyInput from "./Components/UI/input/MyInput";
+import PostForm from "./Components/PostForm";
 
 function App() {
     const [posts, setPosts] = useState([
@@ -15,28 +16,22 @@ function App() {
         {id: 4, title: 'Python', body: "Jango is Python's framework"}
     ]);
 
-    const [post, setPost] = useState({title: '', body: ''});
-
-    const addNewPost = (e) => {
-        e.preventDefault();
-        setPosts([...posts, {...post, id: Date.now()}])
-        setPost({title: '', body: ''})
+    const CreatePost = (newPost) => {
+        setPosts([...posts, newPost]);
     }
 
+    const RemovePost = (id) => {
+        setPosts(posts.filter(post => post.id !== id))
+    }
+    
     return (
         <div className="App">
             <AppWorks/>
             <Counter/>
             <ClassCounter/>
             <InputWithH1/>
-            <form action="">
-                <MyInput value={post.title} onChange={e => setPost({...post, title: e.target.value})} type="text"
-                         placeholder="Post's name"/>
-                <MyInput value={post.body} onChange={e => setPost({...post, body: e.target.value})} type="text"
-                         placeholder="Post's description"/>
-                <MyButton onClick={addNewPost}>Create post</MyButton>
-            </form>
-            <PostList posts={posts} title="List of posts"/>
+            <PostForm create={CreatePost}/>
+            <PostList remove={RemovePost} posts={posts} title="List of posts"/>
 
 
         </div>
