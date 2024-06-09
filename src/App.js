@@ -7,6 +7,7 @@ import PostList from "./Components/PostList";
 import MyButton from "./Components/UI/button/MyButton";
 import MyInput from "./Components/UI/input/MyInput";
 import PostForm from "./Components/PostForm";
+import MySelect from "./Components/UI/Select/MySelect";
 
 function App() {
     const [posts, setPosts] = useState([
@@ -23,7 +24,14 @@ function App() {
     const RemovePost = (id) => {
         setPosts(posts.filter(post => post.id !== id))
     }
-    
+
+    const [selectedSort, setSelectedSort] = React.useState('');
+
+    const sortPosts = (sort) => {
+        setSelectedSort(sort);
+        setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])));
+    }
+
     return (
         <div className="App">
             <AppWorks/>
@@ -31,7 +39,15 @@ function App() {
             <ClassCounter/>
             <InputWithH1/>
             <PostForm create={CreatePost}/>
-            <PostList remove={RemovePost} posts={posts} title="List of posts"/>
+            <hr style={{margin: '15px 0', width: '100%'}}/>
+            <MySelect value={selectedSort} onChange={sortPosts} defaultValue="Sort" options={[
+                {value: 'title', name: 'By name'},
+                {value: 'body', name: 'By description'},
+            ]}/>
+            {posts.length !== 0
+                ? <PostList remove={RemovePost} posts={posts} title="List of posts"/>
+                :
+                <h1 style={{textAlign: 'center'}}>No posts to show</h1>}
 
 
         </div>
