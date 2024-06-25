@@ -9,6 +9,7 @@ import MyInput from "./Components/UI/input/MyInput";
 import PostForm from "./Components/PostForm";
 import MySelect from "./Components/UI/Select/MySelect";
 import PostFilter from "./Components/PostFilter";
+import MyModal from "./Components/Modals/MyModal";
 
 function App() {
     const [posts, setPosts] = useState([
@@ -19,7 +20,7 @@ function App() {
     ]);
 
     const [filter, setFilter] = useState({sort: '', query: ''})
-
+    const [modal, setModal] = useState(false);
 
     const sortedPosts = useMemo(() => {
         if (filter.sort) {
@@ -35,6 +36,7 @@ function App() {
 
     const CreatePost = (newPost) => {
         setPosts([...posts, newPost]);
+        setModal(false)
     }
 
     const RemovePost = (id) => {
@@ -48,7 +50,8 @@ function App() {
             <Counter/>
             <ClassCounter/>
             <InputWithH1/>*/}
-            <PostForm create={CreatePost}/>
+            <MyButton onClick={() => setModal(true)}>Create post</MyButton>
+            <MyModal visible={modal} setVisible={setModal}><PostForm create={CreatePost}/> </MyModal>
             <hr style={{margin: '15px 0', width: '100%'}}/>
             <PostFilter filter={filter} setFilter={setFilter}/>
             <PostList remove={RemovePost} posts={sortedAndSearchedPosts} title="List of posts"/>
