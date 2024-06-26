@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import Counter from "./Components/Counter";
 import ClassCounter from "./Components/ClassCounter";
 import AppWorks from "./Components/AppWorks";
@@ -10,29 +10,29 @@ import PostForm from "./Components/PostForm";
 import MySelect from "./Components/UI/Select/MySelect";
 import PostFilter from "./Components/PostFilter";
 import MyModal from "./Components/Modals/MyModal";
+import {UsePosts} from "./hooks/UsePosts";
+import axios from "axios";
+import PostService from "./API/PostService";
 
 function App() {
     const [posts, setPosts] = useState([
-        {id: 1, title: 'JS', body: "React is JavaScript's framework"},
+        /*{id: 1, title: 'JS', body: "React is JavaScript's framework"},
         {id: 2, title: 'C#', body: "ASP.NET Core is C#'s framework"},
         {id: 3, title: 'Java', body: "Spring is Java's framework"},
-        {id: 4, title: 'Python', body: "Jango is Python's framework"}
+        {id: 4, title: 'Python', body: "Jango is Python's framework"}*/
     ]);
-
     const [filter, setFilter] = useState({sort: '', query: ''})
     const [modal, setModal] = useState(false);
+    const sortedAndSearchedPosts = UsePosts(posts, filter.sort, filter.query);
 
-    const sortedPosts = useMemo(() => {
-        if (filter.sort) {
-            return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]))
-        }
-        return posts;
-    }, [filter.sort, posts]);
+    useEffect(() => {
+        fetchPosts()
+    }, []);
 
-    const sortedAndSearchedPosts = useMemo(() => {
-        return sortedPosts.filter(post => post.title.toLowerCase().includes(filter.query.toLowerCase())
-            || post.body.toLowerCase().includes(filter.query.toLowerCase()));
-    }, [filter.query, sortedPosts])
+    async function fetchPosts() {
+        const posts = await PostService.GetAll()
+        setPosts(posts)
+    }
 
     const CreatePost = (newPost) => {
         setPosts([...posts, newPost]);
@@ -55,8 +55,6 @@ function App() {
             <hr style={{margin: '15px 0', width: '100%'}}/>
             <PostFilter filter={filter} setFilter={setFilter}/>
             <PostList remove={RemovePost} posts={sortedAndSearchedPosts} title="List of posts"/>
-
-
         </div>
     );
 }
