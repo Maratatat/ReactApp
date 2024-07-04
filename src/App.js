@@ -13,6 +13,7 @@ import MyModal from "./Components/Modals/MyModal";
 import {UsePosts} from "./hooks/UsePosts";
 import axios from "axios";
 import PostService from "./API/PostService";
+import Loader from "./Components/UI/Loader/Loader";
 
 function App() {
     const [posts, setPosts] = useState([
@@ -32,9 +33,11 @@ function App() {
 
     async function fetchPosts() {
         setIsPostsLoading(true)
-        const posts = await PostService.GetAll()
-        setPosts(posts)
-        setIsPostsLoading(false)
+        setTimeout(async () => {
+            const posts = await PostService.GetAll()
+            setPosts(posts)
+            setIsPostsLoading(false)
+        }, 1000)
     }
 
     const CreatePost = (newPost) => {
@@ -58,7 +61,7 @@ function App() {
             <hr style={{margin: '15px 0', width: '100%'}}/>
             <PostFilter filter={filter} setFilter={setFilter}/>
             {isPostsLoading
-                ? <h1 style={{textAlign: 'center'}}>Loading posts...</h1>
+                ? <Loader/>
                 : <PostList remove={RemovePost} posts={sortedAndSearchedPosts} title="List of posts"/>
             }
 
