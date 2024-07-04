@@ -1,19 +1,15 @@
-import React, {useEffect, useMemo, useRef, useState} from "react";
-import Counter from "./Components/Counter";
-import ClassCounter from "./Components/ClassCounter";
-import AppWorks from "./Components/AppWorks";
-import InputWithH1 from "./Components/InputWithH1";
+import React, {useEffect, useState} from "react";
 import PostList from "./Components/PostList";
 import MyButton from "./Components/UI/button/MyButton";
-import MyInput from "./Components/UI/input/MyInput";
 import PostForm from "./Components/PostForm";
-import MySelect from "./Components/UI/Select/MySelect";
 import PostFilter from "./Components/PostFilter";
 import MyModal from "./Components/Modals/MyModal";
 import {UsePosts} from "./hooks/UsePosts";
-import axios from "axios";
 import PostService from "./API/PostService";
 import Loader from "./Components/UI/Loader/Loader";
+import {useFetching} from "./hooks/UseFetching";
+import {getPageCount} from "./Utils/pages";
+import {UsePagination} from "./hooks/UsePagination";
 
 function App() {
     const [posts, setPosts] = useState([
@@ -25,19 +21,23 @@ function App() {
     const [filter, setFilter] = useState({sort: '', query: ''})
     const [modal, setModal] = useState(false);
     const sortedAndSearchedPosts = UsePosts(posts, filter.sort, filter.query);
-    const [isPostsLoading, setIsPostsLoading] = useState(false);
+    const [totalPages, setTotalPages] = useState(0);
+    const [limit, setLimit] = useState(10);
+    const [page, setPage] = useState(1);
+    const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
+        const response = await PostService.GetAll(limit, page)
+        setPosts(response.data)
+        const totalCount = response.headers["x-total-count"]
+        setTotalPages(getPageCount(totalCount, limit));
+    })
+    const pagesArray = UsePagination(totalPages)
 
     useEffect(() => {
         fetchPosts()
-    }, []);
+    }, [page]);
 
-    async function fetchPosts() {
-        setIsPostsLoading(true)
-        setTimeout(async () => {
-            const posts = await PostService.GetAll()
-            setPosts(posts)
-            setIsPostsLoading(false)
-        }, 1000)
+    const ChangePage = (page) => {
+        setPage(page);
     }
 
     const CreatePost = (newPost) => {
@@ -60,11 +60,19 @@ function App() {
             <MyModal visible={modal} setVisible={setModal}><PostForm create={CreatePost}/> </MyModal>
             <hr style={{margin: '15px 0', width: '100%'}}/>
             <PostFilter filter={filter} setFilter={setFilter}/>
+            {postError &&
+                <h1>An error occurred: {postError}</h1>}
             {isPostsLoading
                 ? <Loader/>
                 : <PostList remove={RemovePost} posts={sortedAndSearchedPosts} title="List of posts"/>
             }
-
+            <div className="page_wrapper">
+                {pagesArray.map((p) =>
+                    <span key={p} onClick={() => ChangePage(p)} className={page === p ? 'page page__current' : 'page'}>
+                        {p}
+                    </span>
+                )}
+            </div>
         </div>
     );
 }
