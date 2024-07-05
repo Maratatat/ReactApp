@@ -6,7 +6,9 @@
 
 #root {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
 
 .App {
@@ -29,6 +31,17 @@
     margin-top: 15px;
     justify-content: space-between;
     align-items: center;
+}
+
+.post__btns {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.post__btns > *:not(:last-child) {
+    margin-bottom: 5px;
 }
 
 input {
@@ -73,4 +86,18 @@ input {
 .page__current {
     border: 2px solid orange;
     font-weight: bold;
+}
+
+.navbar {
+    height: 50px;
+    background-color: lavender;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0 15px;
+}
+
+.navbar__links > * {
+    padding: 15px;
 }
