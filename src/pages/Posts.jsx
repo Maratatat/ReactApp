@@ -10,6 +10,7 @@ import Loader from "../Components/UI/Loader/Loader";
 import {useFetching} from "../hooks/UseFetching";
 import {getPageCount} from "../Utils/pages";
 import {useObserver} from "../hooks/useObserver";
+import MySelect from "../Components/UI/Select/MySelect";
 
 function Posts() {
     const [posts, setPosts] = useState([
@@ -25,7 +26,7 @@ function Posts() {
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
     const lastElement = useRef();
-    const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
+    const [fetchPosts, isPostsLoading, postError] = useFetching(async (limit, page) => {
         const response = await PostService.GetAll(limit, page)
         setPosts([...posts, ...response.data])
         const totalCount = response.headers["x-total-count"]
@@ -35,8 +36,8 @@ function Posts() {
     useObserver(lastElement, page < totalPages, isPostsLoading, () => setPage(page + 1));
 
     useEffect(() => {
-        fetchPosts()
-    }, [page]);
+        fetchPosts(limit, page)
+    }, [page, limit]);
 
     const ChangePage = (page) => {
         setPage(page);
@@ -62,6 +63,17 @@ function Posts() {
             <MyModal visible={modal} setVisible={setModal}><PostForm create={CreatePost}/> </MyModal>
             <hr style={{margin: '15px 0', width: '100%'}}/>
             <PostFilter filter={filter} setFilter={setFilter}/>
+            <MySelect className="mySelect" value={limit} onChange={value => setLimit(value)}
+                      defaultValue="Elements' quantity on page"
+                      options={[
+                          {value: 5, name: "5"},
+                          {value: 10, name: "10"},
+                          {value: 15, name: "15"},
+                          {value: 20, name: "20"},
+                          {value: 25, name: "25"},
+                          {value: -1, name: "Show all"}
+                      ]}
+            > </MySelect>
             {postError &&
                 <h1>An error occurred: {postError}</h1>}
             <PostList remove={RemovePost} posts={sortedAndSearchedPosts} title="List of posts"/>

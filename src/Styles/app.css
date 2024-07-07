@@ -101,3 +101,8 @@ input {
 .navbar__links > * {
     padding: 15px;
 }
+
+.mySelect {
+    margin-top: 10px;
+    width: 50%;
+}
